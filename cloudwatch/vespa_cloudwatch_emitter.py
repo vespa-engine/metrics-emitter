@@ -1,3 +1,4 @@
+# Copyright 2020 Oath Inc. Licensed under the terms of the Apache 2.0 license. See LICENSE in the project root.
 import boto3
 import json
 import logging
@@ -44,7 +45,7 @@ class VespaCloudwatchEmitter:
             log.info(response)
 
     def _emit_to_cloudwatch(self, client, metric_data):
-        response = client.put_metric_data(MetricData=metric_data, Namespace='VESPA/gv-test')
+        response = client.put_metric_data(MetricData=metric_data, Namespace=self.NAMESPACE)
         return response
 
     def _get_metrics_json(self, url):
@@ -131,19 +132,7 @@ class VespaCloudwatchEmitter:
         """
         Splits the given list into chunks and returns the result as a list of lists/chunks
         """
-        return list(self._chunk(lst, chunk_size))
-
-    def _chunk(self, lst, chunk_size):
-        """ Splits list 'lst' in chunks of max n elements.
-        """
-        res = []
-        for item in lst:
-            res.append(item)
-            if len(res) >= chunk_size:
-                yield res
-                res = []
-        if res:
-            yield res  # the remaining portion of the original list
+        return [lst[i:i + chunk_size] for i in range(0, len(lst), chunk_size)]
 
 
 def lambda_handler(event, context):
