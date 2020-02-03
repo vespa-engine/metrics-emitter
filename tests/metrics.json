@@ -1,0 +1,118 @@
+{
+  "nodes": [
+    {
+      "hostname": "host1",
+      "role": "container/default/0/1",
+      "node": {
+        "timestamp": 1579092582,
+        "metrics": [
+          {
+            "values": {
+              "cpu.util": 11.1,
+              "mem.util": 61
+            },
+            "dimensions": {
+              "applicationId": "my-app",
+              "clusterId": "container/default",
+              "host": "host1",
+              "zone": "zone1"
+            }
+          },
+          {
+            "values": {
+              "net.in.bytes": 12345,
+              "net.out.bytes": 23456
+            },
+            "dimensions": {
+              "applicationId": "my-app",
+              "clusterId": "container/default",
+              "host": "host1",
+              "zone": "zone1"
+            }
+          }
+        ]
+      },
+      "services": [
+        {
+          "name": "vespa.container",
+          "timestamp": 1579092582,
+          "status": {
+            "code": "up",
+            "description": "Data collected successfully"
+          },
+          "metrics": [
+            {
+              "values": {
+                "http.status.2xx.rate": 4.95
+              },
+              "dimensions": {
+                "applicationId": "my-app",
+                "clusterId": "container/default",
+                "host": "host1",
+                "zone": "zone1",
+                "serviceId": "container",
+                "httpMethod": "GET"
+              }
+            },
+            {
+              "values": {
+                "relevance.at_10.average": 1.0002
+              },
+              "dimensions": {
+                "applicationId": "my-app",
+                "clusterId": "container/default",
+                "host": "host1",
+                "zone": "zone1",
+                "serviceId": "container",
+                "chain": "drama_group_workflow"
+              }
+            }
+          ]
+        },
+        {
+          "name": "vespa.slobrok",
+          "timestamp": 1579092582,
+          "status": {
+            "code": "up",
+            "description": "Data collected successfully"
+          },
+          "metrics": [
+            {
+              "values": {
+                "cpu": 0.79
+              },
+              "dimensions": {
+                "applicationId": "my-app",
+                "clusterId": "container/default",
+                "host": "host1",
+                "zone": "zone1",
+                "serviceId": "container"
+              }
+            }
+          ]
+        }
+        ]
+    },
+    {
+      "hostname": "host2",
+      "role": "content/default",
+      "node": {
+        "timestamp": 1579092582,
+        "metrics": [
+          {
+            "values": {
+              "mem.util": 62
+            },
+            "dimensions": {
+              "applicationId": "my-app",
+              "clusterId": "content/followed_item",
+              "host": "host2",
+              "zone": "zone1"
+            }
+          }
+        ]
+      }
+    }
+  ]
+ }
+
