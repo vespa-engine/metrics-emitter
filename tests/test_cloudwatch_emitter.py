@@ -7,6 +7,7 @@ from mock import MagicMock
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
+
 class TestMetricsEmitter(unittest.TestCase):
     
     def test_emit_metrics(self):
@@ -17,7 +18,6 @@ class TestMetricsEmitter(unittest.TestCase):
         emitter.CHUNK_SIZE = 3
         emitter.run()
     
-    
     def test_split_list(self):
         lst = list(range(1, 11))
         list_of_chunks = VespaCloudwatchEmitter().split_list(lst, 3)
@@ -26,14 +26,12 @@ class TestMetricsEmitter(unittest.TestCase):
         assert list_of_chunks[0] == [1, 2, 3]
         assert list_of_chunks[3] == [10]
     
-    
     def test_split_list_with_only_one_chunk(self):
         lst = list(range(1, 3))
         list_of_chunks = VespaCloudwatchEmitter().split_list(lst, 3)
     
         assert len(list_of_chunks) == 1
         assert list_of_chunks[0] == [1, 2]
-    
     
     def test_generated_metric_data(self):
         emitter = VespaCloudwatchEmitter()
@@ -72,7 +70,6 @@ class TestMetricsEmitter(unittest.TestCase):
         assert len(mem_dimensions) == 4
         assert mem_dimensions[2]['Name'] == 'host'
         assert mem_dimensions[2]['Value'] == 'host2'
-
 
     def test_synthetic_metric_data(self):
         """
