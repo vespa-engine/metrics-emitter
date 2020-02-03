@@ -14,6 +14,9 @@ class VespaCloudwatchEmitter:
 
     VESPA_URL = 'http://my-host:8080/metrics/v2/values'
     NAMESPACE = 'my-cloudwatch-namespace'
+    KEY_NAME = 'album-recommendation-private-key'
+    CERT_NAME = 'album-recommendation-public-cert'
+    SSM_REGION = "us-east-1"
     CHUNK_SIZE = 20
 
     def run(self):
@@ -52,9 +55,31 @@ class VespaCloudwatchEmitter:
         """ Send rest request to metrics api and return the response as JSON
         """
         log.info("Sending request to {}".format(url))
-        response = requests.get(url)
+        cert = self._write_certificate()
+        response = requests.get(url, cert=cert)
         response.raise_for_status()
         return response.json()
+
+    def _write_certificate(self):
+        """
+        Retrieves application certificate and key stored in SSM parameter store, and writes result to /tmp/
+        :return: Tuple (path_to_certificate, path_to_key)
+        """
+        ssm = boto3.client('ssm', self.SSM_REGION)
+        response = ssm.get_parameters(
+            Names=[self.CERT_NAME, self.KEY_NAME], WithDecryption=True
+        )
+        paths = []
+        for parameter in response['Parameters']:
+            path = "/tmp/" + parameter["Name"] + ".pem"
+            self._write_file(path, parameter["Value"])
+            paths.append(path)
+        return tuple(paths)
+
+    def _write_file(self, path, content):
+        f = open(path, "w")
+        f.write(content)
+        f.close()
 
     def all_metric_data_for_response(self, response_json):
         metric_data = []
