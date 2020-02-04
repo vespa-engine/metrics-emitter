@@ -31,7 +31,7 @@ class VespaCloudwatchEmitter:
             self._emit_metric_data(metric_data)
         except TimeoutError as e:
             log.warning("Timed out connecting to Vespa's metrics api: {}".format(e))
-        except (HTTPError) as e:
+        except HTTPError as e:
             log.warning("Could not connect to Vespa's metrics api: {}".format(e))
         except Exception as e:
             log.warning("Unexpected error: {}".format(e))
