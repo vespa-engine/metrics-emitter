@@ -11,7 +11,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 class TestMetricsEmitter(unittest.TestCase):
     
     def test_emit_metrics(self):
-        emitter = VespaCloudwatchEmitter()
+        emitter = MockedCloudwatchEmitter()
         with open(os.path.join(HERE, 'metrics.json'), 'r') as f:
             emitter._get_metrics_json = MagicMock(return_value=json.load(f))
         emitter._emit_to_cloudwatch = MagicMock(return_value='Successfully emitted metrics')
@@ -20,7 +20,7 @@ class TestMetricsEmitter(unittest.TestCase):
     
     def test_split_list(self):
         lst = list(range(1, 11))
-        list_of_chunks = VespaCloudwatchEmitter().split_list(lst, 3)
+        list_of_chunks = MockedCloudwatchEmitter().split_list(lst, 3)
     
         assert len(list_of_chunks) == 4
         assert list_of_chunks[0] == [1, 2, 3]
@@ -28,13 +28,13 @@ class TestMetricsEmitter(unittest.TestCase):
     
     def test_split_list_with_only_one_chunk(self):
         lst = list(range(1, 3))
-        list_of_chunks = VespaCloudwatchEmitter().split_list(lst, 3)
+        list_of_chunks = MockedCloudwatchEmitter().split_list(lst, 3)
     
         assert len(list_of_chunks) == 1
         assert list_of_chunks[0] == [1, 2]
     
     def test_generated_metric_data(self):
-        emitter = VespaCloudwatchEmitter()
+        emitter = MockedCloudwatchEmitter()
         with open(os.path.join(HERE, 'metrics.json'), 'r') as f:
             response = json.load(f)
         metric_data = emitter.all_metric_data_for_response(response)
@@ -87,6 +87,14 @@ class TestMetricsEmitter(unittest.TestCase):
         assert 'host' == dimensions[0]['Name']
         assert 'host1' == dimensions[0]['Value']
 
+class MockedCloudwatchEmitter(VespaCloudwatchEmitter):
+    def __init__(self):
+        self.VESPA_URL = 'http://my-host:8080/metrics/v2/values'
+        self.NAMESPACE = 'my-cloudwatch-namespace'
+        self.KEY_NAME = 'my-application-key'
+        self.CERT_NAME = 'my-application-cert'
+        self.SSM_REGION = "us-east-1"
+        self.CHUNK_SIZE = 20
 
 def synthetic_metric_data():
     return [
