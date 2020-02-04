@@ -55,32 +55,33 @@ class VespaCloudwatchEmitter:
         """ Send rest request to metrics api and return the response as JSON
         """
         log.info("Sending request to {}".format(url))
-        cert = self._write_certificate()
-        http = self._get_http(cert)
+        cert_key_pair = self._write_cert_key_pair()
+        http = self._get_http(cert_key_pair)
         response = http.request('GET', url)
         return json.loads(response.data.decode('utf-8'))
 
     def _get_http(self, cert):
-        return urllib3.PoolManager(cert_file=cert['client_cert'],
+        return urllib3.PoolManager(cert_file=cert[self.CERT_NAME],
                                    cert_reqs='CERT_REQUIRED',
-                                   key_file=cert['client_key'],
+                                   key_file=cert[self.KEY_NAME],
                                    timeout=urllib3.Timeout(connect=5.0, read=240.0))
 
-    def _write_certificate(self):
+    def _write_cert_key_pair(self):
         """
         Retrieves application certificate and key stored in SSM parameter store, and writes result to /tmp/
-        :return: Tuple (path_to_certificate, path_to_key)
+        :return: Dictionary (key: cert/key name, value: cert/key path)
         """
         ssm = boto3.client('ssm', self.SSM_REGION)
         response = ssm.get_parameters(
             Names=[self.CERT_NAME, self.KEY_NAME], WithDecryption=True
         )
-        paths = []
+        paths = {}
         for parameter in response['Parameters']:
-            path = "/tmp/" + parameter["Name"]
+            parameter_name = parameter["Name"]
+            path = "/tmp/" + parameter_name
             self._write_file(path, parameter["Value"])
-            paths.append(path)
-        return tuple(paths)
+            paths[parameter_name] = path
+        return paths
 
     def _write_file(self, path, content):
         f = open(path, "w")
