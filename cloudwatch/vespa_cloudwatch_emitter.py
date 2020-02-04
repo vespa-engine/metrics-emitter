@@ -3,6 +3,7 @@ import boto3
 import json
 import logging
 import urllib3
+import os
 from urllib3.exceptions import TimeoutError, HTTPError
 
 logging.basicConfig(format='%(asctime)s\t%(levelname)s\t%(message)s',
@@ -12,12 +13,13 @@ log = logging.getLogger('vespa_cloudwatch_emitter')
 
 class VespaCloudwatchEmitter:
 
-    VESPA_URL = 'http://my-host:8080/metrics/v2/values'
-    NAMESPACE = 'my-cloudwatch-namespace'
-    KEY_NAME = 'album-recommendation-private-key'
-    CERT_NAME = 'album-recommendation-public-cert'
-    SSM_REGION = "us-east-1"
-    CHUNK_SIZE = 20
+    def __init__(self):
+        self.VESPA_URL = os.environ['VESPA_URL']
+        self.NAMESPACE = os.environ['CLOUDWATCH_NAMESPACE']
+        self.KEY_NAME = os.environ['KEY_NAME']
+        self.CERT_NAME = os.environ['CERT_NAME']
+        self.SSM_REGION = os.environ['SSM_REGION']
+        self.CHUNK_SIZE = 20
 
     def run(self):
         log.info('Retrieving Vespa metrics from {}'.format(self.VESPA_URL))
