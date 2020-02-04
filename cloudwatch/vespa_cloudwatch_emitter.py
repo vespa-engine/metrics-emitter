@@ -14,17 +14,22 @@ log = logging.getLogger('vespa_cloudwatch_emitter')
 class VespaCloudwatchEmitter:
 
     def __init__(self):
-        self.VESPA_URL = os.environ['VESPA_URL']
+        # User constants
+        self.VESPA_ENDPOINT = os.environ['VESPA_ENDPOINT']
         self.NAMESPACE = os.environ['CLOUDWATCH_NAMESPACE']
         self.KEY_NAME = os.environ['KEY_NAME']
         self.CERT_NAME = os.environ['CERT_NAME']
         self.SSM_REGION = os.environ['SSM_REGION']
+
+        # Vespa constants
+        self.METRICS_API = 'metrics/v2/values'
         self.CHUNK_SIZE = 20
 
     def run(self):
-        log.info('Retrieving Vespa metrics from {}'.format(self.VESPA_URL))
+        vespa_url = self.VESPA_ENDPOINT + self.METRICS_API
+        log.info('Retrieving Vespa metrics from {}'.format(vespa_url))
         try:
-            metrics_json = self._get_metrics_json(self.VESPA_URL)
+            metrics_json = self._get_metrics_json(vespa_url)
             log.debug("json: {}".format(metrics_json))
             if 'nodes' not in metrics_json:
                 log.warning("No 'nodes' in metrics json")
