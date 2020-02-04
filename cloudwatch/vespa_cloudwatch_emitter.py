@@ -2,8 +2,8 @@
 import boto3
 import json
 import logging
-import requests
-from requests.exceptions import Timeout, HTTPError, InvalidURL, ConnectionError
+import urllib3
+from urllib3.exceptions import TimeoutError, HTTPError
 
 logging.basicConfig(format='%(asctime)s\t%(levelname)s\t%(message)s',
                     level=logging.INFO)
@@ -29,9 +29,9 @@ class VespaCloudwatchEmitter:
                 return
             metric_data = self.all_metric_data_for_response(metrics_json)
             self._emit_metric_data(metric_data)
-        except Timeout as e:
+        except TimeoutError as e:
             log.warning("Timed out connecting to Vespa's metrics api: {}".format(e))
-        except (HTTPError, InvalidURL, ConnectionError) as e:
+        except (HTTPError) as e:
             log.warning("Could not connect to Vespa's metrics api: {}".format(e))
         except Exception as e:
             log.warning("Unexpected error: {}".format(e))
@@ -56,9 +56,15 @@ class VespaCloudwatchEmitter:
         """
         log.info("Sending request to {}".format(url))
         cert = self._write_certificate()
-        response = requests.get(url, cert=cert)
-        response.raise_for_status()
-        return response.json()
+        http = self._get_http(cert)
+        response = http.request('GET', url)
+        return json.loads(response.data.decode('utf-8'))
+
+    def _get_http(self, cert):
+        return urllib3.PoolManager(cert_file=cert['client_cert'],
+                                   cert_reqs='CERT_REQUIRED',
+                                   key_file=cert['client_key'],
+                                   timeout=urllib3.Timeout(connect=5.0, read=240.0))
 
     def _write_certificate(self):
         """
