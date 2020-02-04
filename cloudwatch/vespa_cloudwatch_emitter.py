@@ -71,7 +71,7 @@ class VespaCloudwatchEmitter:
         )
         paths = []
         for parameter in response['Parameters']:
-            path = "/tmp/" + parameter["Name"] + ".pem"
+            path = "/tmp/" + parameter["Name"]
             self._write_file(path, parameter["Value"])
             paths.append(path)
         return tuple(paths)
