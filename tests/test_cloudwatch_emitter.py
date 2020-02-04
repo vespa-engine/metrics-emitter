@@ -89,11 +89,12 @@ class TestMetricsEmitter(unittest.TestCase):
 
 class MockedCloudwatchEmitter(VespaCloudwatchEmitter):
     def __init__(self):
-        self.VESPA_URL = 'http://my-host:8080/metrics/v2/values'
+        self.VESPA_ENDPOINT = 'http://my-host:8080/'
         self.NAMESPACE = 'my-cloudwatch-namespace'
         self.KEY_NAME = 'my-application-key'
         self.CERT_NAME = 'my-application-cert'
         self.SSM_REGION = "us-east-1"
+        self.METRICS_API = 'metrics/v2/values'
         self.CHUNK_SIZE = 20
 
 def synthetic_metric_data():
