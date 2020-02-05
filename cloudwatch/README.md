@@ -22,10 +22,8 @@ aws ssm put-parameter --name parameter_name --value "parameter value" --type Sec
 ```
 `--key-id` can be omitted, in which case the AWS-managed CMK will be used.
 
-Note the ARNs of the newly created parameters. Its format will usually be `arn:aws:ssm:<region>:<account-number>:parameter/<parameter-name>`
-
 ## Create IAM policy and role
-In the IAM service view, create a new policy, with the following permissions
+In the IAM service view, create a new policy, with the following permissions:
 ```json
 {
     "Version": "2012-10-17",
@@ -38,8 +36,7 @@ In the IAM service view, create a new policy, with the following permissions
         {
             "Effect": "Allow",
             "Action": [
-                "ssm:GetParameters",
-                "ssm:GetParameter"
+                "ssm:GetParameters"
             ],
             "Resource": [
                 "<Application key ARN>",
@@ -50,7 +47,18 @@ In the IAM service view, create a new policy, with the following permissions
 }
 ```
 
-Remember to insert the ARNs of your SSM parameters in the policy.
+Remember to insert the ARNs of your SSM parameters in the policy. Its format is
+```
+arn:aws:ssm:<region>:<account-number>:parameter/<parameter-name>
+ ```
+
+If you are unsure about the ARN of your key and certificate you can create the policy using the visual editor.
+In that case, add two permissions:
+1. Service: **Systems Manager**
+    * Action: **GetParameters**
+    * Resources: Add two ARNs, and fill in the correct region and names of the certificate and key parameters you created
+2. Service: **Cloudwatch**
+    * Action: **PutMetricData**
 
 Next, create an IAM role. Choose AWS Lambda as the trusted entity and attach the previously created IAM permission policy.
 
