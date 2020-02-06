@@ -69,7 +69,7 @@ In the Lambda service view, create a new function.
     * **CERT_NAME**: Name of the previously created certificate parameter (note: name, not ARN)
     * **KEY_NAME**: Name of the previously created key parameter
     * **SSM_REGION**: The region in which you created the parameters, e.g. us-east-1
-    * **VESPA_ENDPOINT**: The endpoint of your Vespa application (in the [Vespa console][2], go to your application and open Instances -> endpoints)
+    * **VESPA_ENDPOINT**: The endpoint of your Vespa application
     * **CLOUDWATCH_NAMESPACE**: The Cloudwatch namespace where you want to store your metrics
 7. Increase function timeout under **Basic settings** to 4 minutes
 8. Save Lambda
@@ -84,4 +84,3 @@ If no metrics are emitted to Cloudwatch, create a test in the lambda console. Us
 After running the test, the error message should explain where the configuration has gone wrong.
 
 [1]: ./vespa_cloudwatch_emitter.py
-[2]: https://console.vespa.oath.cloud/tenant/
