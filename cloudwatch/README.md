@@ -4,9 +4,9 @@ This guide will take you through the steps necessary to set up an AWS Lambda pul
 
 ## Prerequisites
 You'll need to have the following available for this guide:
-1. Vespa application endpoint (from the Vespa console)
+1. Vespa application endpoint
 2. Application public certificate and private key
-3. An AWS user with permissions to create these resourses:
+3. An AWS user with permissions to create these resources:
     * SSM parameters
     * IAM roles and policies
     * Lambdas
@@ -64,12 +64,12 @@ In the Lambda service view, create a new function.
 2. Use Python 3.x as runtime
 3. Choose **Use an existing execution role**, and select the role you previously created.
 4. Click create
-5. Insert the contents of [vespa_cloudwatch_emitter.py](./vespa_cloudwatch_emitter.py) into the generated lambda function
+5. Insert the contents of [vespa_cloudwatch_emitter.py][1] into the generated lambda function
 6. Fill in the necessary environment variables:
     * **CERT_NAME**: Name of the previously created certificate parameter (note: name, not ARN)
     * **KEY_NAME**: Name of the previously created key parameter
     * **SSM_REGION**: The region in which you created the parameters, e.g. us-east-1
-    * **VESPA_ENDPOINT**: The endpoint of your Vespa application
+    * **VESPA_ENDPOINT**: The endpoint of your Vespa application (in the [Vespa console][2], go to your application and open Instances -> endpoints)
     * **CLOUDWATCH_NAMESPACE**: The Cloudwatch namespace where you want to store your metrics
 7. Increase function timeout under **Basic settings** to 4 minutes
 8. Save Lambda
@@ -82,3 +82,6 @@ In the Lambda service view, create a new function.
 #### Troubleshooting
 If no metrics are emitted to Cloudwatch, create a test in the lambda console. Use the `Hello World` test template, and leave the input field untouched.
 After running the test, the error message should explain where the configuration has gone wrong.
+
+[1]: ./vespa_cloudwatch_emitter.py
+[2]: https://console.vespa.oath.cloud/tenant/
