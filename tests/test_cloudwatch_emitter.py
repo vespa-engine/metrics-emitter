@@ -17,6 +17,7 @@ class TestMetricsEmitter(unittest.TestCase):
         emitter._emit_to_cloudwatch = MagicMock(return_value='Successfully emitted metrics')
         emitter.CHUNK_SIZE = 3
         emitter.run()
+        assert emitter.chunks_sent == 3
     
     def test_split_list(self):
         lst = list(range(1, 11))

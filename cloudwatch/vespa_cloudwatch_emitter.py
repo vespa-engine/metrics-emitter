@@ -13,6 +13,8 @@ log = logging.getLogger('vespa_cloudwatch_emitter')
 
 class VespaCloudwatchEmitter:
 
+    chunks_sent = 0
+
     def __init__(self):
         # User constants
         self.VESPA_ENDPOINT = os.environ['VESPA_ENDPOINT']
@@ -26,6 +28,7 @@ class VespaCloudwatchEmitter:
         self.CHUNK_SIZE = 20
 
     def run(self):
+        self.chunks_sent = 0
         vespa_url = self.VESPA_ENDPOINT + self.METRICS_API
         log.info('Retrieving Vespa metrics from {}'.format(vespa_url))
         try:
@@ -36,6 +39,7 @@ class VespaCloudwatchEmitter:
                 return
             metric_data = self.all_metric_data_for_response(metrics_json)
             self._emit_metric_data(metric_data)
+            log.info("Finished emitting {} metrics chunks".format(self.chunks_sent))
         except TimeoutError as e:
             log.warning("Timed out connecting to Vespa's metrics api: {}".format(e))
         except HTTPError as e:
@@ -52,6 +56,7 @@ class VespaCloudwatchEmitter:
         for chunk in metric_data_chunks:
             log.info("Emitting chunk with {} metrics".format(len(chunk)))
             response = self._emit_to_cloudwatch(cloudwatch, chunk)
+            self.chunks_sent += 1
             log.info(response)
 
     def _emit_to_cloudwatch(self, client, metric_data):
