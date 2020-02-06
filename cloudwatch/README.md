@@ -72,12 +72,12 @@ In the Lambda service view, create a new function.
     * **VESPA_ENDPOINT**: The endpoint of your Vespa application
     * **CLOUDWATCH_NAMESPACE**: The Cloudwatch namespace where you want to store your metrics
 7. Increase function timeout under **Basic settings** to 4 minutes
-7. Add trigger, with the following configuration:
+8. Save Lambda
+9. Add trigger, with the following configuration:
     * Cloudwatch Events trigger
     * Create new rule
     * Use **Schedule expression** rule type
     * Set preferred schedule, e.g. `rate(5 minutes)`
-9. Save Lambda
 
 #### Troubleshooting
 If no metrics are emitted to Cloudwatch, create a test in the lambda console. Use the `Hello World` test template, and leave the input field untouched.
