@@ -4,7 +4,7 @@ This guide will take you through the steps necessary to set up an AWS Lambda pul
 
 ## Prerequisites
 You'll need to have the following available for this guide:
-1. Vespa application endpoint
+1. Vespa application endpoint (from the Vespa console)
 2. Application public certificate and private key
 3. An AWS user with permissions to create these resourses:
     * SSM parameters
@@ -14,13 +14,6 @@ You'll need to have the following available for this guide:
 ## Store certificate and key in AWS Parameter Store
 In the AWS console, go to AWS Systems manager -> Application Management -> Parameter Store.
 Create two parameters, with application certificate and key as values respectively. Use the SecureString type, and encrypt using a KMS key of your choice.
-
-Alternatively, if you use the AWS CLI, you can create the parameters using the following command:
-
-```commandline
-aws ssm put-parameter --name parameter_name --value "parameter value" --type SecureString --key-id "key id"
-```
-`--key-id` can be omitted, in which case the AWS-managed CMK will be used.
 
 ## Create IAM policy and role
 In the IAM service view, create a new policy, with the following permissions:
@@ -47,7 +40,7 @@ In the IAM service view, create a new policy, with the following permissions:
 }
 ```
 
-Remember to insert the ARNs of your SSM parameters in the policy. Its format is
+Remember to insert the ARNs of your SSM parameters in the policy. Their format is
 ```
 arn:aws:ssm:<region>:<account-number>:parameter/<parameter-name>
  ```
@@ -61,6 +54,8 @@ In that case, add two permissions:
     * Action: **PutMetricData**
 
 Next, create an IAM role. Choose AWS Lambda as the trusted entity and attach the previously created IAM permission policy.
+
+Finally, go to the KMS service view, and add the new role as a Key user of the key you used to encrypt the SSM parameters
 
 ## Create Lambda
 
@@ -76,7 +71,7 @@ In the Lambda service view, create a new function.
     * **SSM_REGION**: The region in which you created the parameters, e.g. us-east-1
     * **VESPA_ENDPOINT**: The endpoint of your Vespa application
     * **CLOUDWATCH_NAMESPACE**: The Cloudwatch namespace where you want to store your metrics
-7. Increase function timeout under **Basic settings** to 1 minute
+7. Increase function timeout under **Basic settings** to 4 minutes
 7. Add trigger, with the following configuration:
     * Cloudwatch Events trigger
     * Create new rule
@@ -84,3 +79,6 @@ In the Lambda service view, create a new function.
     * Set preferred schedule, e.g. `rate(5 minutes)`
 9. Save Lambda
 
+#### Troubleshooting
+If no metrics are emitted to Cloudwatch, create a test in the lambda console. Use the `Hello World` test template, and leave the input field untouched.
+After running the test, the error message should explain where the configuration has gone wrong.
