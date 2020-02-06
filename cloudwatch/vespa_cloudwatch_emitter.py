@@ -16,7 +16,7 @@ class VespaCloudwatchEmitter:
     def __init__(self):
         # User constants
         self.VESPA_ENDPOINT = os.environ['VESPA_ENDPOINT']
-        self.NAMESPACE = os.environ['CLOUDWATCH_NAMESPACE']
+        self.CLOUDWATCH_NAMESPACE = os.environ['CLOUDWATCH_NAMESPACE']
         self.KEY_NAME = os.environ['KEY_NAME']
         self.CERT_NAME = os.environ['CERT_NAME']
         self.SSM_REGION = os.environ['SSM_REGION']
@@ -55,7 +55,7 @@ class VespaCloudwatchEmitter:
             log.info(response)
 
     def _emit_to_cloudwatch(self, client, metric_data):
-        response = client.put_metric_data(MetricData=metric_data, Namespace=self.NAMESPACE)
+        response = client.put_metric_data(MetricData=metric_data, Namespace=self.CLOUDWATCH_NAMESPACE)
         return response
 
     def _get_metrics_json(self, url):
