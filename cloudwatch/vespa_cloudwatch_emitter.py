@@ -6,9 +6,9 @@ import urllib3
 import os
 from urllib3.exceptions import TimeoutError, HTTPError
 
-logging.basicConfig(format='%(asctime)s\t%(levelname)s\t%(message)s',
-                    level=logging.INFO)
+logging.basicConfig(format='%(asctime)s\t%(levelname)s\t%(message)s')
 log = logging.getLogger('vespa_cloudwatch_emitter')
+log.setLevel(logging.INFO)
 
 
 class VespaCloudwatchEmitter:
