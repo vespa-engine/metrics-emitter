@@ -1,3 +1,7 @@
+<!-- Copyright Yahoo. Licensed under the terms of the Apache 2.0 license. See LICENSE in the project root. -->
+
+[![#Vespa](https://vespa.ai/assets/vespa-logo-color.png)](https://vespa.ai)
+
 # Guide - Pulling Vespa metrics to Cloudwatch
 
 This guide will take you through the steps necessary to set up an AWS Lambda pulling Vespa metrics to Cloudwatch.
