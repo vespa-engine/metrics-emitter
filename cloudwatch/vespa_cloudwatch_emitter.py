@@ -22,9 +22,9 @@ class VespaCloudwatchEmitter:
         self.KEY_NAME = os.environ['KEY_NAME']
         self.CERT_NAME = os.environ['CERT_NAME']
         self.SSM_REGION = os.environ['SSM_REGION']
+        self.METRICS_API = 'metrics/v2/values?consumer=' + os.environ.get('CONSUMER', 'default')
 
         # Vespa constants
-        self.METRICS_API = 'metrics/v2/values'
         self.CHUNK_SIZE = 20
 
     def run(self):

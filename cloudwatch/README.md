@@ -71,6 +71,7 @@ In the Lambda service view, create a new function.
     * **SSM_REGION**: The region in which you created the parameters, e.g. us-east-1
     * **VESPA_ENDPOINT**: The endpoint of your Vespa application
     * **CLOUDWATCH_NAMESPACE**: The Cloudwatch namespace where you want to store your metrics
+    * **CONSUMER**: The metric consumer to determine which [metric set](https://docs.vespa.ai/en/operations/metrics.html#metric-sets) to retrieve. Uses *default* if not specifed
 7. Increase function timeout under **Basic settings** to 4 minutes
 8. Save Lambda
 9. Add trigger, with the following configuration:
